@@ -245,11 +245,11 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Gagal membuat video');
       setGeneratedPrompt(prompt); setVideoUrl(data.videoUrl || null); setStatus(data.status || 'Video selesai');
-      setHistory(h => [{ id: `${Date.now()}`, title: sceneTitle || 'Untitled Scene', prompt, model, duration, ratio, resolution, createdAt: new Date().toISOString(), status: 'completed', videoUrl: data.videoUrl || null, estimatedCredits }, ...h].slice(0, 20));
+      setHistory(h => [{ id: `${Date.now()}`, title: sceneTitle || 'Untitled Scene', prompt, model, duration, ratio, resolution, createdAt: new Date().toISOString(), status: 'completed' as const, videoUrl: data.videoUrl || null, estimatedCredits }, ...h].slice(0, 20));
     } catch (e) {
       const message = e instanceof Error ? e.message : 'Terjadi kesalahan';
       setError(message); setStatus('Generation gagal');
-      setHistory(h => [{ id: `${Date.now()}`, title: sceneTitle || 'Untitled Scene', prompt, model, duration, ratio, resolution, createdAt: new Date().toISOString(), status: 'failed', estimatedCredits }, ...h].slice(0, 20));
+      setHistory(h => [{ id: `${Date.now()}`, title: sceneTitle || 'Untitled Scene', prompt, model, duration, ratio, resolution, createdAt: new Date().toISOString(), status: 'failed' as const, estimatedCredits }, ...h].slice(0, 20));
     } finally { setIsGenerating(false); }
   }
 
@@ -486,3 +486,6 @@ export default function Home() {
     {showGuide && <div className="modal-backdrop"><div className="guide-modal"><div className="guide-progress"><span className={guideStep >= 1 ? 'on' : ''}/><span className={guideStep >= 2 ? 'on' : ''}/><span className={guideStep >= 3 ? 'on' : ''}/></div>{guideStep === 1 && <><div className="guide-icon">✦</div><h2>HR-NET AI CINEMA — Commercial Beta</h2><p>Generator dibuat sebagai fondasi produk: workflow scene, reference images, continuity lock, dan history.</p><div className="guide-cards"><div><b>Production workflow</b><span>Prompt → references → settings → generate → history.</span></div><div><b>Commercial foundation</b><span>Struktur siap dikembangkan ke akun, credits, billing, dan cloud storage.</span></div></div></>}{guideStep === 2 && <><div className="guide-icon">▣</div><h2>Kontrol generator</h2><p>Seedance 2.5 dan WAN 3.0 tersedia sebagai pilihan API. Dola tetap sebagai web workflow.</p><div className="mode-list"><div><b>Seedance 2.5</b><span>4–30s</span></div><div><b>WAN 3.0</b><span>2–30s</span></div></div></>}{guideStep === 3 && <><div className="guide-icon">✓</div><h2>Siap produksi</h2><p>Mulai dari satu shot. Setelah engine API stabil, tahap berikutnya adalah akun pengguna, credit wallet, pembayaran, storage, queue worker, dan admin panel.</p><div className="guide-summary"><b>PRINSIP PRODUK</b><span>Jangan kehilangan prompt, reference, dan history.</span><span>Jangan campur API key provider ke browser.</span></div></>}<div className="guide-actions">{guideStep > 1 ? <button onClick={() => setGuideStep(s => s - 1)}>← Kembali</button> : <button onClick={() => setShowGuide(false)}>Lewati</button>}<button className="guide-next" onClick={() => guideStep < 3 ? setGuideStep(s => s + 1) : setShowGuide(false)}>{guideStep < 3 ? 'Lanjut →' : 'Mulai →'}</button></div></div></div>}
   </div>;
 }
+
+
+
