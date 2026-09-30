@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { createClient as createSupabaseClient } from '../lib/supabase/client';
 
 type Asset = { id: string; name: string; description: string };
 type SceneItem = { id: string; title: string; prompt: string; type: 'video' | 'image'; createdAt: string };
@@ -20,7 +21,6 @@ type HistoryItem = {
 
 const emptyAssets: Asset[] = [];
 const emptyScenes: SceneItem[] = [];
-
 const MODEL_INFO: Record<string, { label: string; desc: string; min: number; max: number }> = {
   seedance2_5: { label: 'Seedance 2.5', desc: 'Reference-driven • 4–30 detik', min: 4, max: 30 },
   wan3: { label: 'WAN 3.0', desc: 'Reference-driven • 2–30 detik', min: 2, max: 30 },
@@ -29,6 +29,60 @@ const MODEL_INFO: Record<string, { label: string; desc: string; min: number; max
 const STORAGE_KEY = 'hrnet-ai-cinema-v5';
 
 export default function Home() {
+  const [memberEmail, setMemberEmail] = useState('');
+  const [memberName, setMemberName] = useState('');
+
+  const supabase = useMemo(() => createSupabaseClient(), []);
+
+
+  useEffect(() => {
+    let active = true;
+
+    const loadMember = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!active || !user) return;
+
+      setMemberEmail(user.email ?? '');
+
+      const fullName =
+        typeof user.user_metadata?.full_name === 'string'
+          ? user.user_metadata.full_name
+          : '';
+
+      setMemberName(fullName);
+    };
+
+    loadMember();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const user = session?.user;
+
+      if (!user) {
+        setMemberEmail('');
+        setMemberName('');
+        return;
+      }
+
+      setMemberEmail(user.email ?? '');
+
+      const fullName =
+        typeof user.user_metadata?.full_name === 'string'
+          ? user.user_metadata.full_name
+          : '';
+
+      setMemberName(fullName);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
   const [page, setPage] = useState('Dashboard');
   const [characters, setCharacters] = useState<Asset[]>(emptyAssets);
   const [vehicles, setVehicles] = useState<Asset[]>(emptyAssets);
@@ -353,7 +407,7 @@ async function generate() {
         <button key={item} className={`nav-item ${page === item ? 'active' : ''}`} onClick={() => setPage(item)}><span className="nav-icon">{item === 'Generate Video' ? '▣' : item === 'Generate Gambar' ? '▧' : item === 'Timeline' ? '☷' : item.includes('Library') ? '◈' : '⌂'}</span>{item}</button>)}
 
       <div className="side-section">AI TOOLS</div>
-      <button className={`nav-item ${page === 'AI Agent' ? 'active' : ''}`} onClick={() => setPage('AI Agent')}><span className="nav-icon">✦</span>AI Agent <em className="beta-badge">BETA</em></button>
+      <button className={`nav-item ${page === 'AI Agent' ? 'active' : ''}`} onClick={() => setPage('AI Agent')}><span className="nav-icon">AI</span>AI Agent <em className="beta-badge">BETA</em></button>
 
       <div className="side-quota">
         <div className="quota-head"><span>GENERATION</span><b>PRO</b></div>
@@ -373,7 +427,58 @@ async function generate() {
 
     <main className="content">
       <div className="top-banner"><span>🔒 <b>Local Beta:</b> draft dan history tersimpan di browser ini.</span><span className="top-actions"><button onClick={() => setShowGuide(true)}>Panduan</button><button onClick={() => setPage('Subscription')}>Kelola Paket</button></span></div>
-      <header className="page-header"><div><div className="crumb">HR-NET AI CINEMA / {projectName.toUpperCase()}</div><h1>{page}</h1><p>{page === 'Generate Video' ? 'Generator video sinematik dengan reference workflow, continuity lock, dan generation history.' : page === 'Dashboard' ? 'Pusat kendali produksi: kuota, aktivitas, project, dan akses cepat ke workflow.' : page === 'AI Agent' ? 'Asisten AI untuk ide, cerita, prompt, storyboard, dan workflow produksi.' : 'Kelola workflow produksi HR-NET AI CINEMA.'}</p></div><div className="header-status"><span className="status-dot"/> Sistem siap</div></header>
+      <header className="page-header">
+  <div className="crumb">
+    HR-NET AI CINEMA / {projectName.toUpperCase()}
+    <h1>{page}</h1>
+    <p>
+      {page === 'Generate Video'
+        ? 'Generator video sinematik dengan reference workflow, continuity lock, dan generation history.'
+        : page === 'Dashboard'
+          ? 'Pusat kendali produksi: kuota, aktivitas, project, dan akses cepat ke workflow.'
+          : page === 'AI Agent'
+            ? 'Asisten AI untuk ide, cerita, prompt, storyboard, dan workflow produksi.'
+            : 'Kelola semua produksi HR-NET AI CINEMA.'}
+    </p>
+  </div>
+
+  <div className="header-status">
+    <span className="status-dot" />
+    Sistem siap
+
+   <span
+    style={{
+      marginLeft: '14px',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '6px',
+      color: '#dbeafe',
+      fontSize: '12px',
+      fontWeight: 600,
+    }}
+  >
+          <span>ID</span>
+    <span>{memberName || memberEmail || 'Member'}</span>
+  </span>
+
+  <a
+    href="/auth/logout"
+    style={{
+      marginLeft: '12px',
+      padding: '7px 14px',
+      border: '1px solid rgba(80, 150, 255, 0.35)',
+      borderRadius: '7px',
+      background: 'rgba(20, 45, 80, 0.8)',
+      color: '#dbeafe',
+      textDecoration: 'none',
+      fontSize: '12px',
+      fontWeight: 600,
+    }}
+  >
+    Logout
+  </a>
+</div>
+</header>
 
       {page === 'Dashboard' ? <section className="dashboard-page">
         <div className="dashboard-hero">
@@ -574,8 +679,11 @@ async function generate() {
     </main>
 
     {showGuide && <div className="modal-backdrop"><div className="guide-modal"><div className="guide-progress"><span className={guideStep >= 1 ? 'on' : ''}/><span className={guideStep >= 2 ? 'on' : ''}/><span className={guideStep >= 3 ? 'on' : ''}/></div>{guideStep === 1 && <><div className="guide-icon">✦</div><h2>HR-NET AI CINEMA — Commercial Beta</h2><p>Generator dibuat sebagai fondasi produk: workflow scene, reference images, continuity lock, dan history.</p><div className="guide-cards"><div><b>Production workflow</b><span>Prompt → references → settings → generate → history.</span></div><div><b>Commercial foundation</b><span>Struktur siap dikembangkan ke akun, credits, billing, dan cloud storage.</span></div></div></>}{guideStep === 2 && <><div className="guide-icon">▣</div><h2>Kontrol generator</h2><p>Seedance 2.5 dan WAN 3.0 tersedia sebagai pilihan API. Dola tetap sebagai web workflow.</p><div className="mode-list"><div><b>Seedance 2.5</b><span>4–30s</span></div><div><b>WAN 3.0</b><span>2–30s</span></div></div></>}{guideStep === 3 && <><div className="guide-icon">✓</div><h2>Siap produksi</h2><p>Mulai dari satu shot. Setelah engine API stabil, tahap berikutnya adalah akun pengguna, credit wallet, pembayaran, storage, queue worker, dan admin panel.</p><div className="guide-summary"><b>PRINSIP PRODUK</b><span>Jangan kehilangan prompt, reference, dan history.</span><span>Jangan campur API key provider ke browser.</span></div></>}<div className="guide-actions">{guideStep > 1 ? <button onClick={() => setGuideStep(s => s - 1)}>← Kembali</button> : <button onClick={() => setShowGuide(false)}>Lewati</button>}<button className="guide-next" onClick={() => guideStep < 3 ? setGuideStep(s => s + 1) : setShowGuide(false)}>{guideStep < 3 ? 'Lanjut →' : 'Mulai →'}</button></div></div></div>}
-  </div>;
+</div>;
 }
+
+
+
 
 
 

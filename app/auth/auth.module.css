@@ -1,0 +1,151 @@
+﻿.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(30, 116, 210, .16), transparent 42%),
+    #070b10;
+  color: #eef6ff;
+}
+
+.card {
+  width: min(460px, 100%);
+  padding: 32px;
+  border: 1px solid #233449;
+  border-radius: 18px;
+  background: rgba(10, 16, 24, .96);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .45);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.logoMark {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: #0e3157;
+  border: 1px solid #2467a8;
+  color: #63b2ff;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
+
+.brandTitle {
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.brandSub {
+  margin-top: 3px;
+  color: #5799cf;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+
+.heading span {
+  color: #5aaeff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+.heading h1 {
+  margin: 7px 0 6px;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.heading p {
+  margin: 0;
+  color: #7893ad;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+  margin-top: 25px;
+}
+
+.form label {
+  display: grid;
+  gap: 7px;
+  color: #aac4dc;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 13px;
+  border: 1px solid #2a3c50;
+  border-radius: 9px;
+  background: #0b121a;
+  color: #eef6ff;
+  outline: none;
+  font: inherit;
+}
+
+.form input:focus {
+  border-color: #3488db;
+  box-shadow: 0 0 0 3px rgba(52, 136, 219, .12);
+}
+
+.primary,
+.primaryLink {
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  background: #2477d8;
+  color: white;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary:hover,
+.primaryLink:hover {
+  background: #2f89ed;
+}
+
+.footer {
+  margin-top: 22px;
+  text-align: center;
+  color: #718aa2;
+  font-size: 12px;
+}
+
+.footer a {
+  color: #5aafff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.error {
+  margin-top: 18px;
+  padding: 11px 12px;
+  border: 1px solid #6a3340;
+  border-radius: 8px;
+  background: #241117;
+  color: #ffb5c1;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.primaryLink {
+  margin-top: 24px;
+  padding: 0 18px;
+}
