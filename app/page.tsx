@@ -228,30 +228,120 @@ export default function Home() {
     setStatus('Prompt diperkuat untuk workflow produksi.');
   }
 
-  async function generate() {
-    setGeneratedPrompt(''); setError(''); setVideoUrl(null);
-    if (!prompt.trim()) { setError('Isi deskripsi scene terlebih dahulu.'); setStatus('Menunggu prompt'); return; }
-    if (provider === 'dola') {
-      const copied = await copyPrompt();
-      setStatus(copied ? 'Prompt siap ditempel ke Dola AI.' : 'Gunakan kotak salin manual lalu buka Dola AI.');
-      return;
-    }
-    setIsGenerating(true); setStatus('Mengirim ke Runway AI…');
-    try {
-      const res = await fetch('/api/generate', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ provider, prompt, duration, ratio, resolution, model, references: references.filter(Boolean), reference: references.find(Boolean) || null, audioReferenceName: audioReferenceName || null, videoReferenceName: videoReferenceName || null })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Gagal membuat video');
-      setGeneratedPrompt(prompt); setVideoUrl(data.videoUrl || null); setStatus(data.status || 'Video selesai');
-      setHistory(h => [{ id: `${Date.now()}`, title: sceneTitle || 'Untitled Scene', prompt, model, duration, ratio, resolution, createdAt: new Date().toISOString(), status: 'completed' as const, videoUrl: data.videoUrl || null, estimatedCredits }, ...h].slice(0, 20));
-    } catch (e) {
-      const message = e instanceof Error ? e.message : 'Terjadi kesalahan';
-      setError(message); setStatus('Generation gagal');
-      setHistory(h => [{ id: `${Date.now()}`, title: sceneTitle || 'Untitled Scene', prompt, model, duration, ratio, resolution, createdAt: new Date().toISOString(), status: 'failed' as const, estimatedCredits }, ...h].slice(0, 20));
-    } finally { setIsGenerating(false); }
+async function generate() {
+  setGeneratedPrompt('');
+  setError('');
+  setVideoUrl(null);
+
+  if (!prompt.trim()) {
+    setError('Isi deskripsi scene terlebih dahulu.');
+    setStatus('Menunggu prompt');
+    return;
   }
+
+  if (provider === 'dola') {
+    const copied = await copyPrompt();
+    setStatus(copied ? 'Prompt siap ditempel ke Dola AI.' : 'Gunakan kotak salin manual lalu buka Dola AI.');
+    return;
+  }
+
+  setIsGenerating(true);
+  setStatus('Mengirim ke Runway AI…');
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        provider,
+        prompt,
+        duration,
+        ratio,
+        resolution,
+        model,
+        references: references.filter(Boolean),
+        reference: references.find(Boolean) || null,
+        audioReferenceName: audioReferenceName || null,
+        videoReferenceName: videoReferenceName || null,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || 'Gagal membuat video');
+    if (!data.taskId) throw new Error('Runway tidak mengembalikan task ID.');
+
+    let finalData: any = data;
+
+    // Poll the task from our server so Vercel never has to hold the
+    // initial POST open while Runway renders the video.
+    for (let attempt = 0; attempt < 120; attempt += 1) {
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      const statusRes = await fetch(`/api/generate?taskId=${encodeURIComponent(data.taskId)}`, {
+        cache: 'no-store',
+      });
+      const statusData = await statusRes.json();
+
+      if (!statusRes.ok) {
+        throw new Error(statusData.error || 'Gagal membaca status generation.');
+      }
+
+      finalData = statusData;
+
+      if (statusData.videoUrl) break;
+
+      const normalized = String(statusData.status || '').toLowerCase();
+      if (normalized === 'failed' || normalized === 'cancelled') {
+        throw new Error(statusData.error || 'Runway generation gagal.');
+      }
+
+      setStatus(`Runway sedang membuat video… ${Math.min(attempt + 1, 120)}%`);
+    }
+
+    if (!finalData.videoUrl) {
+      throw new Error('Generation masih berjalan. Coba cek History beberapa saat lagi.');
+    }
+
+    setGeneratedPrompt(prompt);
+    setVideoUrl(finalData.videoUrl);
+    setStatus(finalData.status || 'Video selesai');
+
+    setHistory(h => [{
+      id: `${Date.now()}`,
+      title: sceneTitle || 'Untitled Scene',
+      prompt,
+      model,
+      duration,
+      ratio,
+      resolution,
+      createdAt: new Date().toISOString(),
+      status: 'completed' as const,
+      videoUrl: finalData.videoUrl,
+      estimatedCredits
+    }, ...h].slice(0, 20));
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Terjadi kesalahan';
+    setError(message);
+    setStatus('Generation gagal');
+
+    setHistory(h => [{
+      id: `${Date.now()}`,
+      title: sceneTitle || 'Untitled Scene',
+      prompt,
+      model,
+      duration,
+      ratio,
+      resolution,
+      createdAt: new Date().toISOString(),
+      status: 'failed' as const,
+      estimatedCredits
+    }, ...h].slice(0, 20));
+  } finally {
+    setIsGenerating(false);
+  }
+}
+
 
   function removeHistory(id: string) { setHistory(h => h.filter(x => x.id !== id)); }
 
