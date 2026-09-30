@@ -665,3 +665,333 @@ footer{font-size:15px!important;line-height:1.5!important;color:#8f9baa!importan
     padding-bottom:14px;
   }
 }
+/* HR-NET AI CINEMA v36 — Aspect Ratio layout fix */
+/* Keeps all ratio buttons visible instead of clipping the last 21:9 option. */
+
+@media (min-width: 901px) {
+  .generation-settings-box .control-grid > .field:nth-child(4) {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .generation-settings-box .control-grid > .field:nth-child(4) .small-pills {
+    display: flex;
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    align-items: center;
+    gap: 8px;
+    white-space: normal !important;
+    overflow: visible;
+  }
+
+  .generation-settings-box .control-grid > .field:nth-child(4) .small-pills button {
+    flex: 0 0 auto !important;
+    min-width: 58px;
+  }
+}
+
+/* On narrower screens, allow the existing responsive layout to control the field. */
+@media (max-width: 900px) {
+  .generation-settings-box .control-grid > .field:nth-child(4) .small-pills {
+    flex-wrap: wrap !important;
+    white-space: normal !important;
+    overflow: visible;
+  }
+}/* HR-NET AI CINEMA v37 — Aspect Ratio overflow fix */
+
+/* Allow all aspect-ratio buttons to wrap instead of being clipped. */
+.control-grid > .field:last-child {
+  min-width: 0;
+}
+
+.control-grid > .field:last-child .small-pills {
+  flex-wrap: wrap;
+  white-space: normal;
+  gap: 6px;
+  min-width: 0;
+}
+
+.control-grid > .field:last-child .small-pills button {
+  flex: 0 0 auto;
+  min-width: 0;
+  white-space: nowrap;
+  padding: 10px 12px;
+}
+
+/* Keep the ratio group inside its column on narrower desktop windows. */
+@media (max-width: 1180px) {
+  .control-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .control-grid > .field:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .control-grid > .field:last-child {
+    grid-column: auto;
+  }
+}/* HR-NET AI CINEMA — Align Aspect Ratio with Resolution */
+
+.control-grid > .field:last-child {
+  min-width: 0;
+  align-self: start;
+  margin-top: 0;
+}
+
+.control-grid > .field:last-child .small-pills {
+  flex-wrap: wrap;
+  white-space: normal;
+  gap: 6px;
+  min-width: 0;
+}
+
+.control-grid > .field:last-child .small-pills button {
+  flex: 0 0 auto;
+  min-width: 0;
+  white-space: nowrap;
+  padding: 10px 12px;
+}
+
+/* Pastikan label Aspect Ratio sejajar dengan label Resolution */
+.control-grid > .field:last-child .field-label {
+  margin-top: 0;
+}
+
+/* Jangan turunkan Aspect Ratio ke baris berikutnya */
+@media (min-width: 1181px) {
+  .control-grid {
+    align-items: start;
+  }
+
+  .control-grid > .field:last-child {
+    grid-column: auto;
+  }
+}/* =========================================================
+   HR-NET AI CINEMA — Generation Settings Layout Fix
+   Aspect Ratio sejajar dengan Resolution
+   ========================================================= */
+
+.control-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1.15fr)
+    minmax(0, 1.35fr)
+    minmax(0, 1.8fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.control-grid > .field {
+  min-width: 0;
+  align-self: start;
+}
+
+/* Aspect Ratio tetap di kolom ke-4, baris pertama */
+.control-grid > .field:nth-child(4) {
+  grid-column: 4;
+  grid-row: 1;
+  min-width: 0;
+}
+
+/* Tombol Aspect Ratio tidak keluar dari kolom */
+.control-grid > .field:nth-child(4) .small-pills {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.control-grid > .field:nth-child(4) .small-pills button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 10px 8px;
+  white-space: nowrap;
+}
+
+/* Duration masuk ke baris kedua */
+.control-grid > .field:nth-child(5) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+/* Untuk layar lebih kecil */
+@media (max-width: 1100px) {
+  .control-grid {
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(0, 1fr);
+  }
+
+  .control-grid > .field:nth-child(4) {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .control-grid > .field:nth-child(5) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .control-grid > .field:nth-child(4) .small-pills {
+    flex-wrap: wrap;
+  }
+
+  .control-grid > .field:nth-child(4) .small-pills button {
+    flex: 0 0 auto;
+  }
+}/* =========================================================
+   HR-NET AI CINEMA
+   Generation Settings — FINAL ALIGNMENT
+   ========================================================= */
+
+.control-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(150px, 1fr)
+    minmax(190px, 1.25fr)
+    minmax(240px, 1.35fr)
+    minmax(330px, 1.8fr);
+  gap: 10px;
+  margin-top: 14px;
+  align-items: start;
+}
+
+/* Semua 4 kontrol WAJIB berada pada baris pertama */
+.control-grid > .field:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.control-grid > .field:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.control-grid > .field:nth-child(3) {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.control-grid > .field:nth-child(4) {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+/* Aspect Ratio */
+.control-grid > .field:nth-child(4) .small-pills {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+}
+
+.control-grid > .field:nth-child(4) .small-pills button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 7px;
+  white-space: nowrap;
+}
+
+/* Semua field jangan memaksa grid melebar */
+.control-grid > .field {
+  min-width: 0;
+}
+
+/* Layar sedang */
+@media (max-width: 1100px) {
+  .control-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .control-grid > .field:nth-child(1),
+  .control-grid > .field:nth-child(2),
+  .control-grid > .field:nth-child(3),
+  .control-grid > .field:nth-child(4) {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .control-grid > .field:nth-child(4) {
+    grid-column: 1 / -1;
+  }
+
+  .control-grid > .field:nth-child(4) .small-pills {
+    flex-wrap: wrap;
+  }
+
+  .control-grid > .field:nth-child(4) .small-pills button {
+    flex: 0 0 auto;
+  }
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+  .control-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .control-grid > .field:nth-child(1),
+  .control-grid > .field:nth-child(2),
+  .control-grid > .field:nth-child(3),
+  .control-grid > .field:nth-child(4) {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}/* =========================================================
+   HR-NET AI CINEMA — Sidebar Menu Spacing
+   Lebih rapat, tetap nyaman dibaca
+   ========================================================= */
+
+.sidebar {
+  padding-top: 18px;
+  padding-bottom: 16px;
+}
+
+/* Jarak judul section */
+.side-section {
+  margin: 16px 10px 5px;
+}
+
+/* Menu utama lebih rapat */
+.nav-item {
+  padding: 8px 12px;
+  margin: 1px 0;
+  min-height: 38px;
+  gap: 10px;
+}
+
+/* Section pertama jangan terlalu jauh dari logo */
+.logo + .side-section {
+  margin-top: 16px;
+}
+
+/* Jarak antara Timeline dan AI Tools */
+.nav-item + .side-section {
+  margin-top: 14px;
+}
+
+/* Generation card lebih dekat dengan AI Agent */
+.sidebar-bottom {
+  padding-top: 10px;
+}
+
+/* Jarak engine/profile tetap proporsional */
+.engine {
+  margin-bottom: 9px;
+}
+
+/* Sedikit rapatkan kartu generation */
+.dola-card {
+  margin-top: 9px;
+}
+
+/* Jangan biarkan sidebar membuat jarak kosong berlebihan */
+.sidebar > * {
+  flex-shrink: 0;
+}
