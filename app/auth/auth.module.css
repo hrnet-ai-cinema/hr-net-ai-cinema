@@ -149,3 +149,19 @@
   margin-top: 24px;
   padding: 0 18px;
 }
+/* Pusatkan identitas dan judul pada halaman login */
+.brand {
+  justify-content: center;
+  width: 100%;
+}
+
+.heading {
+  text-align: center;
+  width: 100%;
+}
+
+.heading span,
+.heading h1,
+.heading p {
+  text-align: center;
+}
