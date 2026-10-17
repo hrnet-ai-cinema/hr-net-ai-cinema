@@ -995,3 +995,107 @@ footer{font-size:15px!important;line-height:1.5!important;color:#8f9baa!importan
 .sidebar > * {
   flex-shrink: 0;
 }
+
+/* HR-NET AI CINEMA — Simplified workspace pass (Oct 2026) */
+.sidebar-nav-group{margin:5px 0 2px;border:1px solid #202a35;border-radius:10px;background:#0a0f15;overflow:hidden;flex-shrink:0}
+.sidebar-nav-group>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 12px;color:#c3ccd6;font-size:14px;font-weight:700;cursor:pointer}
+.sidebar-nav-group>summary::-webkit-details-marker{display:none}
+.sidebar-nav-group>summary::before{content:'＋';color:#7f8d9c;font-size:12px;width:14px}
+.sidebar-nav-group[open]>summary::before{content:'−'}
+.sidebar-nav-group>summary small{margin-left:auto;color:#718092;font-size:11px;font-weight:600}
+.sidebar-nav-group[open]>summary{border-bottom:1px solid #202a35;color:#f4f7fa}
+.sidebar-nav-group .nav-item{font-size:14px;padding:9px 10px;margin:2px 0;gap:9px}
+.sidebar-nav-group .nav-icon{width:17px}
+.side-section{margin-top:16px;margin-bottom:6px}
+.side-quota{margin-top:12px;padding:12px}
+.side-quota .quota-head{font-size:10px;letter-spacing:.6px}
+.side-quota .quota-head b{color:#99a7b7;background:#18212b;border-radius:6px;padding:3px 6px}
+.side-quota .quota-number strong{font-size:24px}
+.side-quota .quota-number span{font-size:12px}
+.side-quota>small{font-size:10px;line-height:1.4}
+
+.simple-disclosure{padding:0!important;overflow:hidden}
+.simple-disclosure>summary{list-style:none;cursor:pointer}
+.simple-disclosure>summary::-webkit-details-marker{display:none}
+.simple-disclosure-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;min-height:68px}
+.simple-disclosure-summary::after{content:'＋';font-size:20px;font-weight:500;color:#9ebce0;flex:0 0 auto;margin-left:2px}
+.simple-disclosure[open]>.simple-disclosure-summary::after{content:'−'}
+.simple-disclosure-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+.simple-disclosure-copy>b,.simple-disclosure-copy>strong{font-size:15px;color:#edf3f8;font-weight:750;letter-spacing:0}
+.simple-disclosure-copy>small{font-size:12px;line-height:1.45;color:#8b99a8;font-weight:400}
+.disclosure-indicator{font-size:11px;font-weight:700;color:#a7c9f5;background:#10243a;border:1px solid #27496b;border-radius:999px;padding:6px 9px;white-space:nowrap}
+.disclosure-body{padding:0 14px 14px}
+.reference-section.simple-disclosure{margin-top:14px}
+.reference-section.simple-disclosure .disclosure-body{padding-top:0}
+.reference-section.simple-disclosure .reference-grid{margin-top:0}
+.reference-section.simple-disclosure .reference-actions small{font-size:11px;line-height:1.4}
+.media-reference-section.simple-disclosure{margin-top:10px}
+.media-reference-section.simple-disclosure .disclosure-body{padding-top:0}
+.media-reference-section.simple-disclosure .media-reference-grid{margin-top:0}
+.continuity-settings-box.simple-disclosure{margin-top:12px}
+.continuity-settings-box.simple-disclosure .simple-disclosure-summary{justify-content:flex-start}
+.continuity-settings-box.simple-disclosure .simple-disclosure-summary::after{margin-left:auto}
+.continuity-settings-box.simple-disclosure .controls-title{margin-top:0}
+.continuity-settings-box.simple-disclosure .step{flex:0 0 34px}
+.continuity-settings-box.simple-disclosure .disclosure-body{padding-top:0}
+.generation-settings-box{margin-top:14px}
+.generation-settings-box .controls-title{margin-top:0}
+.panel-title h2{font-size:22px!important}
+.panel-title small{font-size:13px!important;line-height:1.45}
+.scene-title-input{height:46px;font-size:16px!important}
+.prompt-box{min-height:170px;font-size:17px!important;line-height:1.65;padding:18px!important}
+.panel-actions .secondary-btn,.panel-actions .clear-btn{font-size:12px;padding:10px 12px}
+.field label,.duration-row label{font-size:12px;letter-spacing:.5px;color:#9aa8b8}
+.segmented button,.small-pills button{font-size:13px;padding:9px 12px}
+.field-note{font-size:12px;line-height:1.45;color:#8796a6}
+.simple-generate-actions{margin-top:16px;padding:16px;border:1px solid #2d4052;border-radius:14px;background:linear-gradient(120deg,#101a27,#0b1017);display:grid;gap:13px}
+.simple-generation-note{display:flex;align-items:flex-start;gap:10px;min-width:0}
+.simple-generation-note>div{min-width:0}
+.simple-generation-note b{display:block;font-size:14px;color:#e9f0f7;line-height:1.35;font-weight:700}
+.simple-generation-note small{display:block;margin-top:4px;font-size:12px;line-height:1.5;color:#95a3b3}
+.simple-status-dot{width:9px;height:9px;border-radius:50%;background:#54c997;box-shadow:0 0 0 4px rgba(84,201,151,.12);margin-top:4px;flex:0 0 auto}
+.simple-status-dot.busy{background:#e8b44b;box-shadow:0 0 0 4px rgba(232,180,75,.12)}
+.simple-generate-buttons{display:grid;grid-template-columns:minmax(190px,1.5fr) repeat(2,minmax(115px,.7fr));gap:8px}
+.simple-generate-buttons .generate-btn{height:48px;font-size:15px;padding:0 18px;background:#60a5fa!important;color:#07111d!important;border:0;border-radius:10px;box-shadow:none}
+.simple-generate-buttons .generate-btn:hover{filter:brightness(1.08)}
+.simple-generate-buttons .generate-btn:disabled{opacity:.6}
+.simple-secondary-action{min-height:46px;padding:10px 13px;border:1px solid #33465b;border-radius:10px;background:#111a25;color:#dbe6f1;font-size:13px;font-weight:650;cursor:pointer}
+.simple-secondary-action:hover{border-color:#5b88b6;background:#152235}
+.simple-error,.simple-feedback{border-radius:9px;padding:10px 12px;font-size:13px;line-height:1.5}
+.simple-error{background:#2a1519;border:1px solid #7d3039;color:#ffd5d9}
+.simple-feedback{background:#102318;border:1px solid #315d40;color:#c3f2d0}
+.preview-panel{box-shadow:0 12px 34px rgba(0,0,0,.16)}
+.preview-head h2{font-size:18px}
+.preview-info span{font-size:10px}
+.preview-info b{font-size:13px}
+.prompt-preview p{font-size:12px;line-height:1.55;color:#afbdcc}
+.history-item b{font-size:13px}
+.history-item small{font-size:11px}
+
+@media(max-width:1100px){.simple-generate-buttons{grid-template-columns:1fr 1fr}.simple-generate-buttons .generate-btn{grid-column:1/-1}}
+@media(max-width:760px){
+  .sidebar{position:relative;width:100%;height:auto;max-height:none;bottom:auto;padding:12px;}
+  .app-shell{display:block}
+  .content{margin-left:0;width:100%;padding:0 12px 20px}
+  .nav-item,.project-card,.side-section,.sidebar-bottom{display:block}
+  .nav-item{display:flex}
+  .project-card{display:flex}
+  .sidebar-bottom{display:block}
+  .sidebar-nav-group .nav-item{display:flex}
+  .logo{height:auto;min-height:48px;padding-bottom:10px}
+  .side-quota{display:none}
+  .top-banner{height:auto;min-height:48px;gap:8px;flex-wrap:wrap;padding:8px 2px}
+  .top-actions{margin-left:auto}
+  .page-header{padding:18px 3px 14px}
+  .page-header h1{font-size:29px}
+  .workspace{grid-template-columns:1fr;gap:12px}
+  .main-panel{padding:14px}
+  .panel-title{align-items:flex-start;flex-direction:column}
+  .panel-actions{width:100%}
+  .panel-actions button{flex:1}
+  .simple-generate-buttons{grid-template-columns:1fr}
+  .simple-generate-buttons .generate-btn{grid-column:auto;width:100%}
+  .simple-secondary-action{width:100%}
+  .preview-panel{position:relative;top:auto}
+  .preview-frame.vertical{min-height:300px}
+}
