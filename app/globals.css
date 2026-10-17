@@ -1126,3 +1126,26 @@ footer{font-size:15px!important;line-height:1.5!important;color:#8f9baa!importan
     padding: 9px 12px !important;
   }
 }
+/* Jarak kolom agar tampilan lebih lega */
+@media (min-width: 1101px) {
+  .workspace {
+    column-gap: 28px !important;
+  }
+}
+
+/* Jarak antarbagian pengaturan video */
+.generation-settings-box .control-grid {
+  column-gap: 18px !important;
+  row-gap: 20px !important;
+}
+
+/* Jarak label dari tombol pilihan */
+.generation-settings-box .field > label {
+  margin-bottom: 10px !important;
+}
+
+/* Jarak antar tombol pilihan */
+.generation-settings-box .small-pills,
+.generation-settings-box .segmented {
+  gap: 8px !important;
+}
