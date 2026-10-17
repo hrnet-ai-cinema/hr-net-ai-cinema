@@ -144,13 +144,13 @@ export default function Home() {
   const [imageReferenceName, setImageReferenceName] = useState('');
   const [imageGeneratedPrompt, setImageGeneratedPrompt] = useState('');
   const [settingsMessage, setSettingsMessage] = useState('');
-  const [showGuide, setShowGuide] = useState(true);
+  const [showGuide, setShowGuide] = useState(false);
   const [guideStep, setGuideStep] = useState(1);
   const [projectName, setProjectName] = useState('New Project');
   const [projectNotes, setProjectNotes] = useState('');
   const [sceneTitle, setSceneTitle] = useState('');
   const [action, setAction] = useState('');
-  const [duration, setDuration] = useState(5);
+  const [duration, setDuration] = useState(15);
   const [ratio, setRatio] = useState('9:16');
   const [resolution, setResolution] = useState('720p');
   const [provider, setProvider] = useState('dola');
@@ -210,16 +210,6 @@ export default function Home() {
     const t = new Date(item.createdAt).getTime();
     return Number.isFinite(t) && now - t <= 24 * 60 * 60 * 1000;
   });
-  // A generation slot is consumed only by a successfully completed video.
-  // Failed/cancelled generations remain in History for diagnostics but are refunded.
-  const usedSlots24h = Math.min(
-    12,
-    recentHistory.filter(item => {
-      const normalizedStatus = String(item.status || '').trim().toLowerCase();
-      return ['completed', 'done', 'success', 'succeeded'].includes(normalizedStatus);
-    }).length
-  );
-  const availableSlots = Math.max(0, 12 - usedSlots24h);
   const completedCount = history.filter(item => item.status === 'completed').length;
   const failedCount = history.filter(item => item.status === 'failed').length;
   const seedanceCount = history.filter(item => item.model === 'seedance2_5').length;
@@ -1568,26 +1558,33 @@ async function generate() {
   return <div className="app-shell">
     <aside className="sidebar">
       <div className="logo"><img className="brand-logo" src="/logo.png" alt="HR-NET — Berkembang Dengan Teknologi!" /></div>
-      <div className="side-section">STUDIO</div>
-      {['Dashboard','Generate Video','Generate Gambar','Character Library','Vehicle Library','Location Library','Scene Builder','Scene Library','Video Merger','Timeline'].map(item =>
-        <button key={item} className={`nav-item ${page === item ? 'active' : ''}`} onClick={() => setPage(item)}><span className="nav-icon">{item === 'Generate Video' ? '▣' : item === 'Generate Gambar' ? '▧' : item === 'Timeline' ? '☷' : item.includes('Library') ? '◈' : '⌂'}</span>{item}</button>)}
+      <div className="side-section">MULAI</div>
+      {['Dashboard','Generate Video','Generate Gambar'].map(item =>
+        <button key={item} className={`nav-item ${page === item ? 'active' : ''}`} onClick={() => setPage(item)}><span className="nav-icon">{item === 'Generate Video' ? '▣' : item === 'Generate Gambar' ? '▧' : '⌂'}</span>{item}</button>)}
 
-      <div className="side-section">AI PROVIDERS</div>
+      <details className="sidebar-nav-group" open={['Character Library','Vehicle Library','Location Library','Scene Builder','Scene Library','Video Merger','Timeline'].includes(page)}>
+        <summary><span>Library & Produksi</span><small>7 modul</small></summary>
+        {['Character Library','Vehicle Library','Location Library','Scene Builder','Scene Library','Video Merger','Timeline'].map(item =>
+          <button key={item} className={`nav-item ${page === item ? 'active' : ''}`} onClick={() => setPage(item)}><span className="nav-icon">{item === 'Timeline' ? '☷' : item.includes('Library') ? '◈' : item === 'Video Merger' ? '▰' : '⌂'}</span>{item}</button>)}
+      </details>
+
+      <div className="side-section">PROVIDER</div>
       <button className={`nav-item ${page === 'Dola Studio' ? 'active' : ''}`} onClick={() => setPage('Dola Studio')}><span className="nav-icon">D</span>Dola Studio <em className="beta-badge">WEB</em></button>
-      <div className="side-section">AI TOOLS</div>
-      <button className={`nav-item ${page === 'AI Agent' ? 'active' : ''}`} onClick={() => setPage('AI Agent')}><span className="nav-icon">AI</span>AI Agent <em className="beta-badge">BETA</em></button>
 
       <div className="side-quota">
-        <div className="quota-head"><span>GENERATION</span><b>PRO</b></div>
-        <div className="quota-number"><strong>{availableSlots} / 12</strong><span>slot tersedia</span></div>
-        <div className="quota-track"><span style={{width:`${(availableSlots / 12) * 100}%`}}/></div>
-        <small>Reset rolling 24 jam</small>
+        <div className="quota-head"><span>AKTIVITAS 24 JAM</span><b>LOKAL</b></div>
+        <div className="quota-number"><strong>{recentHistory.length}</strong><span>riwayat tersimpan</span></div>
+        <div className="quota-track"><span style={{width:`${Math.min(100, (recentHistory.length / 12) * 100)}%`}}/></div>
+        <small>Ringkasan di browser ini</small>
       </div>
 
-      <div className="side-section">AKUN</div>
-      <button className={`nav-item ${page === 'Subscription' ? 'active' : ''}`} onClick={() => setPage('Subscription')}><span className="nav-icon">◆</span>Subscription</button>
-      <button className={`nav-item ${page === 'Settings' ? 'active' : ''}`} onClick={() => setPage('Settings')}><span className="nav-icon">⚙</span>Settings</button>
-      <button className="nav-item" onClick={() => setShowGuide(true)}><span className="nav-icon">?</span>Bantuan</button>
+      <details className="sidebar-nav-group" open={['AI Agent','Subscription','Settings'].includes(page)}>
+        <summary><span>Tools & Akun</span><small>4 menu</small></summary>
+        <button className={`nav-item ${page === 'AI Agent' ? 'active' : ''}`} onClick={() => setPage('AI Agent')}><span className="nav-icon">AI</span>AI Agent <em className="beta-badge">BETA</em></button>
+        <button className={`nav-item ${page === 'Subscription' ? 'active' : ''}`} onClick={() => setPage('Subscription')}><span className="nav-icon">◆</span>Subscription</button>
+        <button className={`nav-item ${page === 'Settings' ? 'active' : ''}`} onClick={() => setPage('Settings')}><span className="nav-icon">⚙</span>Settings</button>
+        <button className="nav-item" onClick={() => setShowGuide(true)}><span className="nav-icon">?</span>Bantuan</button>
+      </details>
 
       <div className="project-card" onClick={() => { void createCloudProject(); }}><span>＋</span><div><b>New Project</b><small>Mulai proyek baru</small></div></div>
       <div className="sidebar-bottom"><div className="engine"><span className="dot"/> Engine siap</div><div className="user-mini"><span>H</span><div><b>HR-NET</b><small>Pro • Commercial Beta</small></div></div></div>
@@ -1606,9 +1603,9 @@ async function generate() {
           <div className="controls-title"><span className="step">01</span><div><h2>Dola Quick Setup</h2><small>Gunakan scene aktif HR-NET, lalu salin prompt ke Dola.</small></div></div>
           <div className="control-grid">
             <div className="field"><label>SCENE TITLE</label><input value={sceneTitle} onChange={e => setSceneTitle(e.target.value)} placeholder="Contoh: F41 tiba di pelabuhan Merak" /></div>
-            <div className="field"><label>DURATION</label><div className="small-pills">{[15,30,45,60].map(x => <button key={x} className={duration === x ? 'selected' : ''} onClick={() => setDuration(x)}>{x}s</button>)}</div></div>
-            <div className="field"><label>ASPECT RATIO</label><div className="small-pills">{['9:16','16:9','1:1'].map(x => <button key={x} className={ratio === x ? 'selected' : ''} onClick={() => setRatio(x)}>{x}</button>)}</div></div>
-            <div className="field"><label>RESOLUTION</label><div className="small-pills">{['720p','1080p'].map(x => <button key={x} className={resolution === x ? 'selected' : ''} onClick={() => setResolution(x)}>{x}</button>)}</div></div>
+            <div className="field"><label>DURASI</label><div className="small-pills">{[15,30,45,60].map(x => <button key={x} className={duration === x ? 'selected' : ''} onClick={() => setDuration(x)}>{x}s</button>)}</div></div>
+            <div className="field"><label>BENTUK VIDEO</label><div className="small-pills">{['9:16','16:9','1:1'].map(x => <button key={x} className={ratio === x ? 'selected' : ''} onClick={() => setRatio(x)}>{x}</button>)}</div></div>
+            <div className="field"><label>KUALITAS VIDEO</label><div className="small-pills">{['720p','1080p'].map(x => <button key={x} className={resolution === x ? 'selected' : ''} onClick={() => setResolution(x)}>{x}</button>)}</div></div>
           </div>
         </div>
         <div className="generation-settings-box">
@@ -1700,7 +1697,7 @@ async function generate() {
         </div>
 
         <div className="dashboard-stats">
-          <article><span>GENERATION / 24 JAM</span><strong>{availableSlots}<small>/ 12</small></strong><div className="dash-meter"><i style={{width:`${(availableSlots / 12) * 100}%`}}/></div><b>{usedSlots24h} slot terpakai</b></article>
+          <article><span>AKTIVITAS / 24 JAM</span><strong>{recentHistory.length}</strong><div className="dash-meter"><i style={{width:`${Math.min(100, (recentHistory.length / 12) * 100)}%`}}/></div><b>Riwayat lokal di browser ini</b></article>
           <article><span>TOTAL HISTORY</span><strong>{history.length}</strong><b>{completedCount} berhasil • {failedCount} gagal</b></article>
           <article><span>REFERENCE AKTIF</span><strong>{referenceCount}<small>/ {referenceSlots}</small></strong><b>Siap untuk continuity</b></article>
           <article><span>PROJECT</span><strong>01</strong><b>{projectName}</b></article>
@@ -1936,21 +1933,24 @@ async function generate() {
         </section>
       </section> : page === 'Generate Video' ? <div className="workspace">
         <section className="main-panel">
-          <div className="panel-title"><div><span className="step">01</span><div><h2>Describe your scene</h2><small>Tulis aksi, kamera, karakter, lokasi, dan suasana.</small></div></div><div className="panel-actions"><button className="secondary-btn" onClick={enhancePrompt}>✦ Enhance Prompt</button><button className="clear-btn" onClick={clearWorkspace}>Clear</button></div></div>
+          <div className="panel-title"><div><span className="step">01</span><div><h2>Ceritakan adegan</h2><small>Tulis apa yang ingin terlihat di video. Sisanya bisa diatur nanti.</small></div></div><div className="panel-actions"><button className="secondary-btn" onClick={enhancePrompt}>✦ Bantu perbaiki prompt</button><button className="clear-btn" onClick={clearWorkspace}>Bersihkan</button></div></div>
           <input className="scene-title-input" value={sceneTitle} onChange={e => setSceneTitle(e.target.value)} placeholder="Judul scene / shot..." />
           <textarea className="prompt-box" value={action} onChange={e => setAction(e.target.value)} placeholder="Contoh: F41 berjalan perlahan di dermaga, kamera tracking dari samping, angin laut menggerakkan pakaian..." />
 
-          <div className="reference-section">
-            <div className="reference-header"><div><b>REFERENCE IMAGES</b><small>Seedance 2.5 mendukung hingga 30 image references. Simpan referensi per shot agar continuity mudah dikelola.</small></div><span className="reference-count">{referenceCount}/{referenceSlots}</span></div>
+          <details className="reference-section simple-disclosure">
+            <summary className="simple-disclosure-summary"><span className="simple-disclosure-copy"><b>Referensi gambar (opsional)</b><small>Foto karakter, kendaraan, lokasi, atau storyboard.</small></span><span className="disclosure-indicator">{referenceCount ? `${referenceCount} gambar dipilih` : 'Tambah gambar'}</span></summary>
+            <div className="disclosure-body">
             <div className="reference-grid">{Array.from({ length: referenceSlots }, (_, i) => <label className={`reference-slot ${references[i] ? 'filled' : ''}`} key={i}>
               <input type="file" accept="image/*" onChange={async e => { const f = e.target.files?.[0]; if (!f) return; if (f.size > 20 * 1024 * 1024) { setError('Reference asli maksimal 20 MB.'); return; } try { setStatus(`Memproses reference image ${i + 1}...`); const compressed = await compressReferenceImage(f); setReferences(v => { const n = [...v]; n[i] = compressed; return n; }); setReferenceNames(v => { const n = [...v]; n[i] = f.name; return n; }); setError(''); setStatus(`Reference image ${i + 1} siap digunakan.`); } catch (err) { setError(err instanceof Error ? err.message : 'Gagal memproses reference image.'); } finally { e.currentTarget.value = ''; } }} />
               {references[i] ? <><img src={references[i]} alt={`Reference ${i + 1}`} /><button type="button" className="reference-delete" aria-label={`Hapus image ${i + 1}`} title="Hapus reference" onClick={e => { e.preventDefault(); e.stopPropagation(); setReferences(v => { const n = [...v]; n[i] = ''; return n; }); setReferenceNames(v => { const n = [...v]; n[i] = ''; return n; }); setError(''); }}>×</button><span className="reference-check">✓</span></> : <><span className="reference-index">IMAGE {i + 1}</span><span className="reference-plus">＋</span></>}
             </label>)}</div>
             <div className="reference-actions">{referenceSlots < 30 && <button className="add-reference" onClick={() => setReferenceSlots(v => Math.min(30, v + 5))}>＋ Tambah 5 slot</button>}{referenceCount > 0 && <button className="remove-ref" onClick={() => { setReferences(Array(6).fill('')); setReferenceNames(Array(6).fill('')); setReferenceSlots(6); }}>Hapus semua</button>}<small>{referenceCount ? `${referenceCount} file siap dipakai sebagai bahan continuity.` : 'Tambahkan referensi karakter, kendaraan, lokasi, atau storyboard.'}</small></div>
-          </div>
+            </div>
+          </details>
 
-          <div className="media-reference-section">
-            <div className="media-reference-head"><div><b>REFERENCE MEDIA</b><small>Tambahkan audio dan video sebagai acuan suara, ritme, gerakan, kamera, atau kontinuitas.</small></div><span>{audioReference ? 'AUDIO ✓' : ''}{audioReference && videoReference ? ' • ' : ''}{videoReference ? 'VIDEO ✓' : ''}</span></div>
+          <details className="media-reference-section simple-disclosure">
+            <summary className="simple-disclosure-summary"><span className="simple-disclosure-copy"><b>Referensi audio / video (opsional)</b><small>Gunakan suara atau video sebagai acuan tambahan.</small></span><span className="disclosure-indicator">{audioReference || videoReference ? 'Media dipilih' : 'Tambah media'}</span></summary>
+            <div className="disclosure-body">
             <div className="media-reference-grid">
               <label className={`media-reference-card ${audioReference ? 'active' : ''}`}>
                 <input type="file" accept="audio/*" onChange={e => { const f=e.target.files?.[0]; if(f) handleMediaReference('audio', f); e.currentTarget.value=''; }} />
@@ -1965,37 +1965,39 @@ async function generate() {
                 {videoReference && <video className="video-mini-player" controls muted src={videoReference} onClick={e => e.stopPropagation()} />}
               </label>
             </div>
-            {(audioReference || videoReference) && <small className="media-reference-note">Reference media tersimpan sementara di browser selama project ini terbuka. Provider API akan menerima metadata nama file; integrasi upload media provider dilakukan di tahap backend.</small>}
-          </div>
+            {(audioReference || videoReference) && <small className="media-reference-note">Referensi media tersimpan sementara di browser selama project ini terbuka.</small>}
+            </div>
+          </details>
 
           <div className="generation-settings-box">
-          <div className="controls-title"><span className="step">02</span><div><h2>Generation settings</h2><small>Atur provider, model, kualitas, format, dan durasi sebelum generate.</small></div></div>
+          <div className="controls-title"><span className="step">02</span><div><h2>Pengaturan video</h2><small>Pilih metode, kualitas, bentuk, dan durasi video.</small></div></div>
           <div className="control-grid">
-            <div className="field"><label>PROVIDER</label><div className="segmented"><button className={provider === 'dola' ? 'selected' : ''} onClick={() => { setProvider('dola'); setDuration(v => Math.min(Math.max(v, 15), 60)); }}>Dola <em>WEB</em></button><button className={provider === 'runway' ? 'selected' : ''} onClick={() => { setProvider('runway'); setDuration(v => Math.min(Math.max(v, 5), 30)); }}>Runway <em>API</em></button></div><a className="dola-link" href="https://www.dola.com/chat/" target="_blank" rel="noopener noreferrer">Buka Dola AI ↗</a></div>
-            <div className="field"><label>MODEL</label><select value={model} onChange={e => setModel(e.target.value)} disabled={provider === 'dola'}><option value="seedance2_5">Seedance 2.5</option><option value="wan3">WAN 3.0</option></select><small className="field-note">{modelInfo.desc}</small></div>
-            <div className="field"><label>RESOLUTION</label><div className="small-pills">{['480p', '720p', '1080p', '4K'].map(x => <button key={x} className={`${resolution === x ? 'selected' : ''} ${x === '4K' ? 'soon-pill' : ''}`} disabled={x === '4K'} title={x === '4K' ? 'Output 4K akan diaktifkan setelah provider mendukung.' : undefined} onClick={() => setResolution(x)}>{x}</button>)}</div></div>
-            <div className="field"><label>ASPECT RATIO</label><div className="small-pills">{['9:16', '16:9', '1:1', '3:4', '4:3', '21:9'].map(x => <button key={x} className={ratio === x ? 'selected' : ''} onClick={() => setRatio(x)}>{x}</button>)}</div></div>
+            <div className="field"><label>METODE</label><div className="segmented"><button className={provider === 'dola' ? 'selected' : ''} onClick={() => { setProvider('dola'); setDuration(v => Math.min(Math.max(v, 15), 60)); }}>Dola <em>SITUS</em></button><button className={provider === 'runway' ? 'selected' : ''} onClick={() => { setProvider('runway'); setDuration(v => Math.min(Math.max(v, 5), 30)); }}>Runway <em>API</em></button></div><a className="dola-link" href="https://www.dola.com/chat/" target="_blank" rel="noopener noreferrer">Buka Dola AI ↗</a></div>
+            <div className="field"><label>MODEL AI</label><select value={model} onChange={e => setModel(e.target.value)} disabled={provider === 'dola'}><option value="seedance2_5">Seedance 2.5</option><option value="wan3">WAN 3.0</option></select><small className="field-note">{modelInfo.desc}</small></div>
+            <div className="field"><label>KUALITAS VIDEO</label><div className="small-pills">{['480p', '720p', '1080p', '4K'].map(x => <button key={x} className={`${resolution === x ? 'selected' : ''} ${x === '4K' ? 'soon-pill' : ''}`} disabled={x === '4K'} title={x === '4K' ? 'Output 4K akan diaktifkan setelah provider mendukung.' : undefined} onClick={() => setResolution(x)}>{x}</button>)}</div></div>
+            <div className="field"><label>BENTUK VIDEO</label><div className="small-pills">{['9:16', '16:9', '1:1', '3:4', '4:3', '21:9'].map(x => <button key={x} className={ratio === x ? 'selected' : ''} onClick={() => setRatio(x)}>{x}</button>)}</div></div>
           </div>
           <div className="duration-row">
              <div>
-               <label>DURATION</label>
+               <label>DURASI</label>
                <div className="small-pills">
                  {(provider === 'dola' ? [15, 30, 45, 60] : [5, 10, 15, 30]).map(x =>
                    <button key={x} className={duration === x ? 'selected' : ''} disabled={provider !== 'dola' && (x < modelInfo.min || x > modelInfo.max)} onClick={() => setDuration(x)}>{x}s</button>
                  )}
                </div>
-               <small className="field-note">{provider === 'dola' ? '15s = satu scene. 30/45/60s = rangkaian scene 15 detik dengan continuity bridge.' : 'Durasi mengikuti kemampuan model API yang dipilih.'}</small>
+               <small className="field-note">{provider === 'dola' ? '15 detik = satu scene. Durasi lebih panjang dibagi menjadi beberapa scene.' : 'Durasi mengikuti model API yang dipilih.'}</small>
              </div>
            </div>
           </div>
 
-          <div className="continuity-settings-box">
-          <div className="controls-title assets-title"><span className="step">03</span><div><h2>Continuity lock</h2><small>Kunci elemen penting agar scene berikutnya tetap konsisten.</small></div></div>
+          <details className="continuity-settings-box simple-disclosure">
+          <summary className="controls-title assets-title simple-disclosure-summary"><span className="step">03</span><span className="simple-disclosure-copy"><b>Karakter & konsistensi (opsional)</b><small>Kunci wajah, kendaraan, lokasi, dan posisi untuk scene lanjutan.</small></span><span className="disclosure-indicator">Pengaturan</span></summary>
+          <div className="disclosure-body">
           <div className="lock-grid">{[["Character Lock", characterLock, setCharacterLock, 'Wajah, pakaian, identitas'], ["Vehicle Lock", vehicleLock, setVehicleLock, 'Bentuk, warna, grafis'], ["Location Lock", locationLock, setLocationLock, 'Tata letak lingkungan'], ["Position Lock", positionLock, setPositionLock, 'Posisi anggota & cargo']].map(([n, v, set, desc]) => <button key={String(n)} className={`lock-card ${v ? 'on' : ''}`} onClick={() => (set as (x: boolean) => void)(!v)}><span className="lock-symbol">{v ? '✓' : '○'}</span><div><b>{String(n)}</b><small>{String(desc)}</small></div></button>)}</div>
 
           {characters.length || vehicles.length || locations.length ? <div className="asset-grid">{characters.length > 0 && <div className="asset-card"><div className="asset-head"><span>CHARACTERS</span><b>{selectedCharacters.length} dipilih</b></div><div className="chips">{characters.map(c => <button key={c.name} className={selectedCharacters.includes(c.name) ? 'chip active' : 'chip'} onClick={() => toggleCharacter(c.name)}>{c.name}</button>)}</div></div>}{vehicles.length > 0 && <div className="asset-card"><div className="asset-head"><span>VEHICLE</span><b>{selectedVehicle ? 'LOCKED' : 'BELUM DIPILIH'}</b></div><select value={selectedVehicle} onChange={e => setSelectedVehicle(e.target.value)}><option value="">Pilih kendaraan...</option>{vehicles.map(v => <option key={v.name} value={v.name}>{v.name}</option>)}</select></div>}{locations.length > 0 && <div className="asset-card"><div className="asset-head"><span>LOCATION</span><b>{selectedLocation ? 'LOCKED' : 'BELUM DIPILIH'}</b></div><select value={selectedLocation} onChange={e => setSelectedLocation(e.target.value)}><option value="">Pilih lokasi...</option>{locations.map(v => <option key={v.name} value={v.name}>{v.name}</option>)}</select></div>}</div> : <div className="empty-assets"><div><b>Project masih kosong.</b><small>Tambahkan character, vehicle, dan location melalui Library agar workflow continuity dapat digunakan penuh.</small></div><button onClick={() => setPage('Character Library')}>Buka Library →</button></div>}
           </div>
-
+          </details>
 
           {provider === 'dola' && duration > 15 && <div className="generation-settings-box" style={{marginTop:12}}>
             <div className="controls-title"><span className="step">04</span><div><h2>Dola Long Video Plan</h2><small>{duration} detik dibagi menjadi {Math.ceil(duration / 15)} scene × 15 detik.</small></div></div>
@@ -2017,14 +2019,28 @@ async function generate() {
                <button className="module-secondary" onClick={() => { void copyNextDolaSegment(); }}>▶ SCENE BERIKUTNYA</button>
                <button className="module-secondary" onClick={() => { void copyDolaLongVideoPlan(); }}>📋 SALIN SEMUA</button>
                {longVideoPlan.length > 0 && <button className="module-secondary" onClick={markCurrentDolaSegmentCompleted}>✓ TANDAI SELESAI</button>}</div></div>}
+
+          <div className="simple-generate-actions">
+            <div className="simple-generation-note">
+              <span className={`simple-status-dot ${isGenerating ? 'busy' : ''}`} />
+              <div><b>{status}</b><small>{provider === 'dola' ? (duration > 15 ? 'Siapkan rangkaian prompt, lalu lanjutkan di situs Dola.' : 'Prompt akan disiapkan untuk ditempel ke situs Dola; video tidak dibuat otomatis di sini.') : 'Generate melalui penyedia API yang dipilih.'}</small></div>
+            </div>
+            <div className="simple-generate-buttons">
+              <button className="generate-btn" onClick={() => void generate()} disabled={isGenerating}>{isGenerating ? 'Sedang memproses…' : provider === 'dola' ? (duration > 15 ? 'Siapkan rangkaian Dola' : 'Siapkan prompt Dola') : 'Generate video'}</button>
+              <button className="simple-secondary-action" onClick={() => void copyPrompt()}>Salin prompt</button>
+              <button className="simple-secondary-action" onClick={() => saveScene('video')}>Simpan scene</button>
+            </div>
+            {error && <div className="simple-error" role="alert">{error}</div>}
+            {videoCloudMessage && <div className="simple-feedback">{videoCloudMessage}</div>}
+          </div>
         </section>
 
         <aside className="preview-panel">
-          <div className="preview-head"><div><span className="eyebrow">LIVE PREVIEW</span><h2>Scene Preview</h2></div><span className="ratio-badge">{ratio}</span></div>
+          <div className="preview-head"><div><span className="eyebrow">HASIL</span><h2>Pratinjau video</h2></div><span className="ratio-badge">{ratio}</span></div>
           <div className={`preview-frame ${ratio === '9:16' ? 'vertical' : ''}`}>{videoUrl ? <video controls src={videoUrl} /> : references.find(Boolean) ? <img src={references.find(Boolean)!} alt="Reference utama" /> : <div className="preview-empty"><div className="camera">▣</div><b>Hasil video akan muncul di sini</b><small>Generate scene untuk melihat preview.</small></div>}</div>
           <div className="preview-info"><div><span>MODEL</span><b>{modelInfo.label}</b></div><div><span>OUTPUT</span><b>{resolution} • {duration}s</b></div><div><span>REFERENCES</span><b>{referenceCount}</b></div></div>
-          <div className="prompt-preview"><div className="asset-head"><span>GENERATED PROMPT</span><button onClick={() => { void copyPrompt(); }}>Copy</button></div><p>{generatedPrompt || 'Belum ada prompt baru. Tulis scene lalu Generate atau Salin Prompt.'}</p></div>
-          <div className="history-panel"><div className="asset-head"><span>RECENT GENERATIONS</span><b>{history.length}</b></div>{history.length === 0 ? <small className="history-empty">Belum ada generation history.</small> : history.slice(0, 5).map(item => <div className="history-item" key={item.id}><div><b>{item.title}</b><small>{item.model} • {item.duration}s • {item.resolution}</small></div><span className={item.status === 'completed' ? 'history-ok' : 'history-fail'}>{item.status === 'completed' ? 'DONE' : 'FAIL'}</span><button onClick={() => removeHistory(item.id)}>×</button></div>)}</div>
+          <div className="prompt-preview"><div className="asset-head"><span>PROMPT TERAKHIR</span><button onClick={() => { void copyPrompt(); }}>Copy</button></div><p>{generatedPrompt || 'Prompt yang disiapkan akan muncul di sini.'}</p></div>
+          <div className="history-panel"><div className="asset-head"><span>RIWAYAT GENERATE</span><b>{history.length}</b></div>{history.length === 0 ? <small className="history-empty">Belum ada generation history.</small> : history.slice(0, 5).map(item => <div className="history-item" key={item.id}><div><b>{item.title}</b><small>{item.model} • {item.duration}s • {item.resolution}</small></div><span className={item.status === 'completed' ? 'history-ok' : 'history-fail'}>{item.status === 'completed' ? 'DONE' : 'FAIL'}</span><button onClick={() => removeHistory(item.id)}>×</button></div>)}</div>
         </aside>
       </div> : <div className="placeholder-panel"><div className="big-icon">✦</div><h2>{page}</h2><p>Modul ini disiapkan sebagai bagian dari roadmap studio komersial HR-NET AI CINEMA. Generator video menjadi core workflow.</p><button onClick={() => setPage('Generate Video')}>Kembali ke Generate Video</button></div>}
 
