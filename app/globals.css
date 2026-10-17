@@ -1099,3 +1099,30 @@ footer{font-size:15px!important;line-height:1.5!important;color:#8f9baa!importan
   .preview-panel{position:relative;top:auto}
   .preview-frame.vertical{min-height:300px}
 }
+/* FINAL FIX — Aspect ratio tidak terpotong */
+@media (min-width: 1101px) {
+  .generation-settings-box .control-grid > .field:nth-child(4) {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  .generation-settings-box .control-grid > .field:nth-child(4) .small-pills {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    white-space: normal !important;
+    width: 100% !important;
+    overflow: visible !important;
+    gap: 8px !important;
+  }
+
+  .generation-settings-box .control-grid > .field:nth-child(4) .small-pills button {
+    flex: 0 0 auto !important;
+    min-width: 58px !important;
+    padding: 9px 12px !important;
+  }
+}
